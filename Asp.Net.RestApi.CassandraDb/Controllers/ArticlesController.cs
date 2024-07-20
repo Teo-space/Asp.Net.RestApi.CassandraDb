@@ -1,4 +1,3 @@
-using Cassandra.Data.Linq;
 using Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using UseCases;
@@ -18,7 +17,9 @@ public class ArticlesController(
     public Article GetArticle([FromQuery] QueryArticleDisplay request)
     {
         cassandraDbRepository.Connect();
+
         logger.LogInformation($"{this.HttpContext.Request.Method} {this.HttpContext.Request.Path}");
+
         return cassandraDbRepository.Articles()
             .Where(x => x.ArticleId == request.ArticleId && x.ArticleVersionId == request.ArticleVersionId)
             .FirstOrDefault()
@@ -29,7 +30,9 @@ public class ArticlesController(
     public IEnumerable<Article> GetArticleVersions([FromQuery] QueryArticleVersions request)
     {
         cassandraDbRepository.Connect();
+
         logger.LogInformation($"{this.HttpContext.Request.Method} {this.HttpContext.Request.Path}");
+
         return cassandraDbRepository.Articles()
             .Where(x => x.ArticleId == request.ArticleId).Execute();
     }
@@ -38,9 +41,12 @@ public class ArticlesController(
     public Article CreateArticle([FromForm] CommandArticleCreate request)
     {
         cassandraDbRepository.Connect();
+
         logger.LogInformation($"{this.HttpContext.Request.Method} {this.HttpContext.Request.Path}");
+
         var article = Article.Create(request.Title, request.Description, request.Text);
         cassandraDbRepository.Articles().Insert(article).Execute();
+
         return article;
     }
 
@@ -48,7 +54,9 @@ public class ArticlesController(
     public Article CreateArticleVersion([FromForm] CommandArticleCreateVersion request)
     {
         cassandraDbRepository.Connect();
+
         logger.LogInformation($"{this.HttpContext.Request.Method} {this.HttpContext.Request.Path}");
+
         var article = cassandraDbRepository.Articles()
             .Where(x => 
                 x.ArticleId == request.ArticleId 
@@ -70,7 +78,9 @@ public class ArticlesController(
     public Article DeleteArticle([FromForm] CommandArticleDelete request)
     {
         cassandraDbRepository.Connect();
+
         logger.LogInformation($"{this.HttpContext.Request.Method} {this.HttpContext.Request.Path}");
+
         var article = cassandraDbRepository.Articles()
                 .Where(x =>
                             x.ArticleId == request.ArticleId

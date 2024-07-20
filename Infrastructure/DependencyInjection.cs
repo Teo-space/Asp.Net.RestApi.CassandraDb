@@ -19,20 +19,8 @@ public static class DependencyInjection
         builder.Services.AddScoped<ICassandraDbRepository, CassandraDbRepository>();
 
 
-
-
-
-
-
-
-
         return builder;
     }
-
-
-
-
-
 
 
 }
